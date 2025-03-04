@@ -1,8 +1,6 @@
-# Use a lightweight base image
-FROM python:3.9-slim as base
+# Try multi stage build
+FROM mwess89/greedyfhist:0.0.3-rc1 as base
 
-# Install dependencies
-RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Clone repositories and install Python packages in a separate stage
 FROM base as builder

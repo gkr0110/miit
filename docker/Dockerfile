@@ -1,13 +1,19 @@
-FROM mwess89/greedyfhist:0.0.3-rc1
+# Use a lightweight base image
+FROM python:3.9-slim as base
 
-RUN pip install git+https://github.com/mwess/miit@v0.0.3-rc1
+# Install dependencies
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
-RUN pip install jupyterlab
+# Clone repositories and install Python packages in a separate stage
+FROM base as builder
+RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/greedyfhist /greedyfhist
+RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/miit /miit
+RUN pip install /greedyfhist /miit jupyterlab
 
-RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/greedyfhist
-RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/miit
+# Create the final image
+FROM base
+COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
 
 EXPOSE 8888
-ENTRYPOINT ["jupyter", "lab"]
-CMD ["--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
-
+CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]

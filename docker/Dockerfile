@@ -9,6 +9,10 @@ RUN pip install git+https://github.com/mwess/miit@v0.0.3-rc1 jupyterlab
 RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/greedyfhist
 RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/miit
 
+# Debug: Check if the site-packages directory exists
+RUN ls -la /usr/local/lib/python3.9/site-packages
+
+
 # Create the final image
 FROM base
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages

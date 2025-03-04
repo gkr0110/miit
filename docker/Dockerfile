@@ -4,9 +4,10 @@ FROM mwess89/greedyfhist:0.0.3-rc1 as base
 
 # Clone repositories and install Python packages in a separate stage
 FROM base as builder
-RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/greedyfhist /greedyfhist
-RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/miit /miit
-RUN pip install /greedyfhist /miit jupyterlab
+RUN pip install git+https://github.com/mwess/miit@v0.0.3-rc1 jupyterlab
+
+RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/greedyfhist
+RUN git clone --depth 1 --branch v0.0.3-rc1 https://github.com/mwess/miit
 
 # Create the final image
 FROM base
